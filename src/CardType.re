@@ -1,6 +1,10 @@
 type card = {
-    question: string,
-    answer: string,
+  question: string,
+  answer: string,
 };
 
-type difficulty = Easy | Medium | Hard | None;
+type difficulty =
+  | Easy
+  | Medium
+  | Hard
+  | None;
