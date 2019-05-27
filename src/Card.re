@@ -5,30 +5,36 @@ type state = {
 };
 
 /* Action declaration */
-type action = Show | SetDifficulty(CardType.difficulty);
+type action =
+  | Hide
+  | Show;
 
-let initialState = {
-  showAnswer: false,
-  lastDifficulty: None,
-};
+let initialState = {showAnswer: false, lastDifficulty: None};
 
 let reducer = (state, action) =>
   switch (action) {
+  | Hide => {...state, showAnswer: false}
   | Show => {...state, showAnswer: true}
-  | SetDifficulty(level) => { ...state, lastDifficulty: level }
   };
 
-
 [@react.component]
-let make = (~question, ~answer, ~setDifficulty) => {
+let make = (~question, ~answer, ~validateAnswer) => {
   let (state, dispatch) = React.useReducer(reducer, initialState);
-  Js.log("re-render");
+
+  let handleValidateAnswer = difficulty => {
+    dispatch(Hide);
+    validateAnswer(difficulty);
+  };
 
   <div>
     {ReasonReact.string(question)}
     <button onClick={_event => dispatch(Show)}>
       {ReasonReact.string("Show Answer")}
     </button>
-    <Answer text=answer isShown=state.showAnswer dispatch={setDifficulty}/>
-  </div>
-  };
+    <Answer
+      text=answer
+      isShown={state.showAnswer}
+      validateAnswer=handleValidateAnswer
+    />
+  </div>;
+};
